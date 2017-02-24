@@ -10,4 +10,8 @@ function Node(content) {
         parentElement.append(el);
     };
 
+    my.moveTo = function (x, y) {
+        UTILITIES.moveElement(el, x, y);
+    }
+
 }

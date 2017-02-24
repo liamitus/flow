@@ -21,7 +21,9 @@ var FLOW = (function (SETTINGS, UTILS, KEYCODE, my) {
         if (!inputElement) {
             createTextArea();
         }
-        moveElement(inputElement, event.x, event.y);
+        var adjustedX = event.x - 5;
+        var adjustedY = event.y - 10;
+        UTILS.moveElement(inputElement, adjustedX, adjustedY);
         inputElement.focus();
     }
 
@@ -29,16 +31,9 @@ var FLOW = (function (SETTINGS, UTILS, KEYCODE, my) {
         console.dir(inputElement);
         var value = inputElement.value;
         var node = createNode(value);
-        moveElement(node, inputElement.offsetLeft, inputElement.offsetTop);
+        node.moveTo(inputElement.offsetLeft, inputElement.offsetTop);
         bodyElement.removeChild(inputElement);
         inputElement = null;
-    }
-
-    function moveElement(el, x, y) {
-        var adjustedX = x - 5;
-        var adjustedY = y - 10;
-        var styleStr = 'top:' + adjustedY + 'px;left:' + adjustedX + 'px;';
-        el.setAttribute('style', styleStr);
     }
 
     function handleArrowKeys(event) {
@@ -66,10 +61,8 @@ var FLOW = (function (SETTINGS, UTILS, KEYCODE, my) {
     }
 
     function createNode(content) {
-        var node = document.createElement('div');
-        node.innerHTML = content;
-        node.setAttribute('class', 'node');
-        bodyElement.append(node);
+        var node = new Node(content);
+        node.appendTo(bodyElement);
         return node;
     }
 

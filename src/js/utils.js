@@ -8,7 +8,7 @@ var UTILITIES = (function (my) {
     };
 
     my.moveElement = function (el, x, y) {
-        var styleStr = 'top:' + adjustedY + 'px;left:' + adjustedX + 'px;';
+        var styleStr = 'top:' + y + 'px;left:' + x + 'px;';
         el.setAttribute('style', styleStr);
     };
 
