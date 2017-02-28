@@ -3,8 +3,8 @@ function Node(content) {
     
     // --------------------------------------------------------------- Constants
     
-    X_MOVE_AMOUNT = 200;
-    Y_MOVE_AMOUNT = 100;
+    var X_MOVE_AMOUNT = 200;
+    var Y_MOVE_AMOUNT = 100;
 
     // ------------------------------------------------------------------ Public
 
@@ -42,6 +42,14 @@ function Node(content) {
         moveAdjacentNodesDown();
     };
 
+    my.getEdgeX = function () {
+        return elX + (el.offsetWidth / 2);
+    };
+
+    my.getEdgeY = function () {
+        return elY + (el.offsetHeight / 2);
+    };
+
     my.getX = function () {
         return elX;
     };
@@ -65,24 +73,28 @@ function Node(content) {
     function moveAdjacentNodesLeft() {
         adjacentNodes.forEach(function (n) {
             n.moveLeft();
+            EDGES.connect(my, n);
         });
     }
 
     function moveAdjacentNodesUp() {
         adjacentNodes.forEach(function (n) {
             n.moveUp();
+            EDGES.connect(my, n);
         });
     }
 
     function moveAdjacentNodesRight() {
         adjacentNodes.forEach(function (n) {
             n.moveRight();
+            EDGES.connect(my, n);
         });
     }
 
     function moveAdjacentNodesDown() {
         adjacentNodes.forEach(function (n) {
             n.moveDown();
+            EDGES.connect(my, n);
         });
     }
 
