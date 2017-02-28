@@ -5,53 +5,65 @@ var FLOW = (function (SETTINGS, UTILS, KEYCODE, my) {
     // The constructor.
     my.start = function () {
         bodyElement = UTILS.getElement('body');
-
         bind('click', handleClickInDocument);
-
         bind('keydown', handleArrowKeys);
-
     };
 
     // ----------------------------------------------------------------- Private
 
     var bodyElement;
     var inputElement;
-
-    function handleClickInDocument(event) {
-        if (!inputElement) {
-            createTextArea();
-        }
-        var adjustedX = event.x - 5;
-        var adjustedY = event.y - 10;
-        UTILS.moveElement(inputElement, adjustedX, adjustedY);
-        inputElement.focus();
-    }
-
-    function convertToNode() {
-        console.dir(inputElement);
-        var value = inputElement.value;
-        var node = createNode(value);
-        node.moveTo(inputElement.offsetLeft, inputElement.offsetTop);
-        bodyElement.removeChild(inputElement);
-        inputElement = null;
-    }
+    var previousNode;
 
     function handleArrowKeys(event) {
         switch (event.keyCode) {
             case KEYCODE.ARROW_LEFT:
-                console.log('left');
+                var node = convertToNode();
+                createInputAt(node.getX(), node.getY());
+                node.moveRight();
                 break;
             case KEYCODE.ARROW_UP:
-                console.log('up');
-                convertToNode();
+                var node = convertToNode();
+                createInputAt(node.getX(), node.getY());
+                node.moveDown();
                 break;
             case KEYCODE.ARROW_RIGHT:
-                console.log('right');
+                var node = convertToNode();
+                createInputAt(node.getX(), node.getY());
+                node.moveLeft();
                 break;
             case KEYCODE.ARROW_DOWN:
-                console.log('down');
+                var node = convertToNode();
+                createInputAt(node.getX(), node.getY());
+                node.moveUp();
                 break;
         }
+    }
+
+    function handleClickInDocument(event) {
+        var adjustedX = event.x - 5;
+        var adjustedY = event.y - 10;
+        createInputAt(adjustedX, adjustedY);
+    }
+
+    function createInputAt(x, y) {
+        if (!inputElement) {
+            createTextArea();
+        }
+        UTILS.moveElement(inputElement, x, y);
+        inputElement.focus();
+    }
+
+    function convertToNode() {
+        if (!inputElement) {
+            return
+        }
+        var value = inputElement.value;
+        var node = previousNode = createNode(value);
+        node.moveTo(inputElement.offsetLeft, inputElement.offsetTop);
+        bodyElement.removeChild(inputElement);
+        inputElement = null;
+        return node;
     }
 
     function createTextArea() {
