@@ -1,8 +1,12 @@
 var FLOW = (function (SETTINGS, UTILS, KEYCODE, my) {
 
+    // --------------------------------------------------------------- Constants
+
+    var X_INPUT_OFFSET = 5;
+    var Y_INPUT_OFFSET = 10;
+
     // ------------------------------------------------------------------ Public
 
-    // The constructor.
     my.start = function () {
         bodyElement = UTILS.getElement('body');
         bind('click', handleClickInDocument);
@@ -19,31 +23,49 @@ var FLOW = (function (SETTINGS, UTILS, KEYCODE, my) {
         switch (event.keyCode) {
             case KEYCODE.ARROW_LEFT:
                 var node = convertToNode();
-                createInputAt(node.getX(), node.getY());
-                node.moveRight();
+                if (node) {
+                    createInputAt(node.getX(), node.getY());
+                    node.moveLeft();
+                }
                 break;
             case KEYCODE.ARROW_UP:
                 var node = convertToNode();
-                createInputAt(node.getX(), node.getY());
-                node.moveDown();
+                if (node) {
+                    createInputAt(node.getX(), node.getY());
+                    node.moveUp();
+                }
                 break;
             case KEYCODE.ARROW_RIGHT:
                 var node = convertToNode();
-                createInputAt(node.getX(), node.getY());
-                node.moveLeft();
+                if (node) {
+                    createInputAt(node.getX(), node.getY());
+                    node.moveRight();
+                }
                 break;
             case KEYCODE.ARROW_DOWN:
                 var node = convertToNode();
-                createInputAt(node.getX(), node.getY());
-                node.moveUp();
+                if (node) {
+                    createInputAt(node.getX(), node.getY());
+                    node.moveDown();
+                }
                 break;
         }
     }
 
-    function handleClickInDocument(event) {
-        var adjustedX = event.x - 5;
-        var adjustedY = event.y - 10;
-        createInputAt(adjustedX, adjustedY);
+    function convertToNode() {
+        if (!inputElement || !inputElement.value) {
+            return
+        }
+        var value = inputElement.value;
+        var node = createNode(value);
+        if (previousNode) {
+            node.addAdjacent(previousNode);
+        }
+        previousNode = node;
+        node.moveTo(inputElement.offsetLeft, inputElement.offsetTop);
+        bodyElement.removeChild(inputElement);
+        inputElement = null;
+        return node;
     }
 
     function createInputAt(x, y) {
@@ -54,16 +76,13 @@ var FLOW = (function (SETTINGS, UTILS, KEYCODE, my) {
         inputElement.focus();
     }
 
-    function convertToNode() {
-        if (!inputElement) {
-            return
+    function handleClickInDocument(event) {
+        if (inputElement === document.activeElement) {
+            return;
         }
-        var value = inputElement.value;
-        var node = previousNode = createNode(value);
-        node.moveTo(inputElement.offsetLeft, inputElement.offsetTop);
-        bodyElement.removeChild(inputElement);
-        inputElement = null;
-        return node;
+        var adjustedX = event.x - X_INPUT_OFFSET;
+        var adjustedY = event.y - Y_INPUT_OFFSET;
+        createInputAt(adjustedX, adjustedY);
     }
 
     function createTextArea() {
